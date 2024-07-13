@@ -3,8 +3,16 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/modelUser');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const config = require('../utils/config'); // Asegúrate de que la ruta sea correcta
 
 router.use(cors());
+const JWT_SECRET = config.SECRET_KEY;
+
+if (!JWT_SECRET) {
+  console.error('JWT_SECRET no está definido');
+  process.exit(1);
+} 
 
 // POST /api/login - Autenticación de usuarios (login)
 router.post('/api/login', async (req, res) => {
@@ -21,11 +29,18 @@ router.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'Email o contraseña incorrectos' });
     }
 
-    // Aquí puedes incluir la lógica para generar un token JWT si decides implementarlo más adelante
+    // Crear token JWT
+    const token = jwt.sign({
+      userId: user._id,
+      email: user.email,
+      role: user.role
+    }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(200).json({ message: 'Login exitoso'});
+    // Asegúrate de que el token se está enviando correctamente
+    res.status(200).json({ message: 'Login exitoso', token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error en el login:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 

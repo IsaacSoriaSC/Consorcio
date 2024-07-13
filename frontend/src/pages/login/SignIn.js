@@ -14,23 +14,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from '../../services/AuthService';
-import { Toaster, toast } from 'sonner'
+import { Toaster, toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © Raccoon City '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+function SignIn() {
+  const navigate = useNavigate();
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
-
-export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,19 +28,34 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password')
     };
-
+  
     try {
       const response = await AuthService.login(credentials);
-      console.log('Login successful:', response); // Aquí puedes manejar la respuesta según necesites
-      toast.success('Inicio de sesión exitoso');
+      console.log('Login successful:', response);
+      
+      // Verifica el token antes de redirigir
+      const token = localStorage.getItem('token');
+      if (token && token.split('.').length === 3) {
+        navigate('/dashboard');
+      } else {
+        console.error('Token inválido recibido');
+        // Maneja el error apropiadamente (por ejemplo, mostrando un mensaje al usuario)
+      }
     } catch (error) {
-      console.error('Login error:', error); // Manejar errores de autenticación
-      // Puedes mostrar un mensaje de error en el formulario de login
+      console.error('Login error:', error);
+      // Muestra un mensaje de error al usuario
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  });
+
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -114,8 +119,9 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
 }
+
+export default SignIn;

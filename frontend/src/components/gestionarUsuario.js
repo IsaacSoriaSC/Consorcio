@@ -1,21 +1,18 @@
-/* eslint-disable no-unused-vars */
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import RegisterService from '../../services/RegisterService';
-import { useNavigate } from 'react-router-dom'; // Paso 1
-import { Toaster, toast } from 'sonner'
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 function Copyright(props) {
   return (
@@ -27,12 +24,14 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const navigate = useNavigate(); // Paso 2
+  const [role, setRole] = React.useState('');
+
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,18 +43,11 @@ export default function SignUp() {
       username,
       email: data.get('email'),
       password: data.get('password'),
-      role: 'cliente'
+      role: role
     };
 
-    try {
-      const response = await RegisterService.create(credentials);
-      console.log('Register successful'); // Aquí puedes manejar la respuesta según necesites
-      toast.success('Usuario registrado exitosamente');
-      navigate('/login');
-    } catch (error) {
-      console.error('Register error:', error); // Manejar errores de autenticación
-      // Puedes mostrar un mensaje de error en el formulario de login
-    }
+    // Lógica para manejar la creación del usuario
+    console.log('Datos del usuario:', credentials);
   };
 
   return (
@@ -74,7 +66,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Registrarse
+            Añadir Usuario
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -121,10 +113,21 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="Utilizar mi información para recibir actualizaciones por correo electrónico."
-                />
+                <FormControl fullWidth>
+                  <InputLabel id="role-label">Rol</InputLabel>
+                  <Select
+                    labelId="role-label"
+                    id="role"
+                    value={role}
+                    label="Rol"
+                    onChange={handleChange}
+                    required
+                  >
+                    <MenuItem value="vendedor">Vendedor</MenuItem>
+                    <MenuItem value="gerente">Gerente</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
             <Button
@@ -133,18 +136,19 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Registrar
+              Añadir
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  Ya tienes una cuenta? Ingresar
-                </Link>
-              </Grid>
-            </Grid>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ mt: 1, mb: 2 }}
+              onClick={() => console.log('Regresar a gestión de usuarios')}
+            >
+              Regresar
+            </Button>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        <Copyright sx={{ mt: 2 }} />
       </Container>
     </ThemeProvider>
   );
