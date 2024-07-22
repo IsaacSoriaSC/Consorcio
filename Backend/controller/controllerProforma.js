@@ -13,6 +13,25 @@ router.get('/api/proformas', (req, res) => {
     });
 });
 
+// GET /api/proformas/byEmail - Obtener proformas por correo electrónico del cliente
+router.get('/api/proformas/byEmail', (req, res) => {
+  const { clientEmail } = req.query;
+  if (!clientEmail) {
+    return res.status(400).json({ error: 'Se requiere el correo electrónico del cliente' });
+  }
+  
+  // Usamos una expresión regular para hacer la búsqueda insensible a mayúsculas y minúsculas
+  const emailRegex = new RegExp('^' + clientEmail + '$', 'i');
+  
+  Proforma.find({ clientEmail: emailRegex })
+    .then(proformas => {
+      res.json(proformas);
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
+});
+
 // POST /api/proformas - Crear una nueva proforma
 router.post('/api/proformas', (req, res) => {
   const proforma = new Proforma(req.body);

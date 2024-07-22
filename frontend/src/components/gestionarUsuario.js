@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,6 +14,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useNavigate } from 'react-router-dom';
+import RegisterService from '../services/RegisterService'; // Ajusta la ruta según la ubicación real de tu servicio
 
 function Copyright(props) {
   return (
@@ -28,6 +31,8 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const [role, setRole] = React.useState('');
+  const [error, setError] = React.useState('');
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setRole(event.target.value);
@@ -46,8 +51,14 @@ export default function SignUp() {
       role: role
     };
 
-    // Lógica para manejar la creación del usuario
-    console.log('Datos del usuario:', credentials);
+    try {
+      const response = await RegisterService.create(credentials);
+      console.log('Register successful'); // Aquí puedes manejar la respuesta según necesites
+    } catch (error) {
+      console.error('Register error:', error); // Manejar errores de autenticación
+      console.log(credentials);
+      // Puedes mostrar un mensaje de error en el formulario de login
+    }
   };
 
   return (
@@ -68,6 +79,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Añadir Usuario
           </Typography>
+          {error && <Typography color="error">{error}</Typography>}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -142,7 +154,7 @@ export default function SignUp() {
               fullWidth
               variant="outlined"
               sx={{ mt: 1, mb: 2 }}
-              onClick={() => console.log('Regresar a gestión de usuarios')}
+              onClick={() => navigate('/dashboard')}
             >
               Regresar
             </Button>

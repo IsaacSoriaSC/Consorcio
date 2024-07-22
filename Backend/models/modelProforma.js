@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const proformaSchema = new mongoose.Schema({
-    clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property', required: true },
+    clientEmail: { type: String, required: true },
+    propertyTitle: { type: String, required: true },
     totalAmount: { type: Number, required: true },
     details: { type: String, required: true },
-    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    status: { type: String, enum: ['Pendiente', 'Aprobado', 'Rechazado'], default: 'Pendiente' },
     createdAt: { type: Date, default: Date.now }
 });
+
 
 module.exports = mongoose.model('Proforma', proformaSchema);
