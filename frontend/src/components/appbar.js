@@ -18,7 +18,7 @@ const settings = ['Logout'];
 
 const rolePages = {
   vendedor: ['Crear Proformas', 'Gestionar Proformas', 'Ver Propiedades'],
-  gerente: ['Reportes', 'Gestionar Vendedores', 'Crear Propiedades'],
+  gerente: ['Gestionar Vendedores', 'Crear Propiedades', 'Gestionar Propiedades'],
   cliente: ['Mis Proformas', 'Mis Propiedades', 'Asistencia'],
   admin: ['Gestionar Usuarios', 'Test']
 };
