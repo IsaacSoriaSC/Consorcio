@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Proforma = require('../models/modelProforma');
+const { generateProformaPDF } = require('../services/PDFService');
 
 // GET /api/proformas - Obtener todas las proformas
 router.get('/api/proformas', (req, res) => {
@@ -11,6 +12,25 @@ router.get('/api/proformas', (req, res) => {
     .catch(error => {
       res.status(500).json({ error: error.message });
     });
+});
+
+// GET /api/proformas/:id/pdf - Generar PDF de una proforma
+router.get('/api/proformas/:id/pdf', async (req, res) => {
+  try {
+    const proforma = await Proforma.findById(req.params.id);
+    if (!proforma) {
+      return res.status(404).json({ error: 'Proforma no encontrada' });
+    }
+
+    const pdfBuffer = await generateProformaPDF(proforma);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=proforma_${proforma._id}.pdf`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    res.status(500).json({ error: 'Error generando PDF' });
+  }
 });
 
 // GET /api/proformas/byEmail - Obtener proformas por correo electrónico del cliente

@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PropertyService from '../services/PropertyService';
+import { Toaster, toast } from 'sonner'; // Importa Toaster y toast
 
 const defaultTheme = createTheme({
   components: {
@@ -96,9 +97,10 @@ export default function PropertyList() {
       await PropertyService.update(selectedProperty._id, selectedProperty);
       fetchProperties();
       handleCloseEditDialog();
+      toast.success('Propiedad editada exitosamente'); // Mostrar toast de éxito
     } catch (error) {
       console.error('Error updating property:', error);
-      setError('Error updating property. Please try again.');
+      toast.error('Error editando propiedad. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
     }
   };
 
@@ -117,9 +119,10 @@ export default function PropertyList() {
       await PropertyService.delete(propertyToDelete._id);
       fetchProperties();
       handleCloseDeleteDialog();
+      toast.success('Propiedad eliminada exitosamente'); // Mostrar toast de éxito
     } catch (error) {
       console.error('Error deleting property:', error);
-      setError('Error deleting property. Please try again.');
+      toast.error('Error eliminando propiedad. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
     }
   };
 
@@ -139,6 +142,7 @@ export default function PropertyList() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="lg">
+        <Toaster richColors /> {/* Renderizar Toaster con colores ricos */}
         <Typography component="h1" variant="h5" sx={{ mt: 4, mb: 2 }}>
           Propiedades Disponibles
         </Typography>

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import API_BASE_URL from './APIConfig';
 
-const API_URL = 'http://localhost:3003/api/properties';
+const API_URL = `${API_BASE_URL}/properties`;
 
 const PropertyService = {
   // Métodos existentes

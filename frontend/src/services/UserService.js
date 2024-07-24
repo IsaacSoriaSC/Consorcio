@@ -1,5 +1,7 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3003/api/users';
+import API_BASE_URL from './APIConfig';
+
+const baseUrl = `${API_BASE_URL}/users`;
 
 const UserService = {
   getAll: () => {

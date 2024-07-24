@@ -9,6 +9,7 @@ import CrearPropiedad from './crearPropiedad';
 import VerPropiedades from './verPropiedades';
 import GestionarVendedores from './gestionarVendedores';
 import GestionarPropiedades from './gestionarPropiedades';
+import MisProformas from './misProformas';
 
 function Layout() {
   const [currentComponent, setCurrentComponent] = useState(null);
@@ -36,6 +37,9 @@ function Layout() {
       case 'Gestionar Propiedades':
         setCurrentComponent(<GestionarPropiedades />);
         break;
+        case 'Mis Proformas':
+          setCurrentComponent(<MisProformas />);
+          break;
       default:
         setCurrentComponent(null);
     }

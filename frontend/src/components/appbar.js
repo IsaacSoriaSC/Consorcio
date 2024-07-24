@@ -19,7 +19,7 @@ const settings = ['Logout'];
 const rolePages = {
   vendedor: ['Crear Proformas', 'Gestionar Proformas', 'Ver Propiedades'],
   gerente: ['Gestionar Vendedores', 'Crear Propiedades', 'Gestionar Propiedades'],
-  cliente: ['Mis Proformas', 'Mis Propiedades', 'Asistencia'],
+  cliente: ['Mis Proformas', 'Asistencia'],
   admin: ['Gestionar Usuarios', 'Test']
 };
 
@@ -89,7 +89,7 @@ function ResponsiveAppBar({ onMenuClick }) {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            CONSORCIO
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

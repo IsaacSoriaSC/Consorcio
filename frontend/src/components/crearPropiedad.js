@@ -12,46 +12,49 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import PropertyService from '../services/PropertyService'; // Asegúrate de crear este servicio
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © Raccoon City '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Toaster, toast } from 'sonner'; // Importa Toaster y toast
 
 const defaultTheme = createTheme();
 
 export default function PropertyForm() {
+  const [title, setTitle] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  const [price, setPrice] = React.useState('');
+  const [location, setLocation] = React.useState('');
+  const [images, setImages] = React.useState('');
   const [error, setError] = React.useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+
     const property = {
-      title: data.get('title'),
-      description: data.get('description'),
-      price: parseFloat(data.get('price')),
-      location: data.get('location'),
-      images: data.get('images').split(',').map(url => url.trim()) // Convierte la entrada en un array de URLs
+      title,
+      description,
+      price: parseFloat(price),
+      location,
+      images: images.split(',').map(url => url.trim()) // Convierte la entrada en un array de URLs
     };
 
     try {
-      const response = await PropertyService.create(property);
-      console.log('Property created successfully');
+      await PropertyService.create(property);
+      toast.success('Propiedad creada exitosamente'); // Mostrar toast de éxito
+      // Limpiar campos
+      setTitle('');
+      setDescription('');
+      setPrice('');
+      setLocation('');
+      setImages('');
       navigate('/dashboard'); // Ajusta esta ruta según tu aplicación
     } catch (error) {
       console.error('Error creating property:', error);
-      setError('Error creating property. Please try again.');
+      toast.error('Error creando la propiedad. Por favor, verifique los campos.'); // Mostrar toast de error
     }
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Toaster richColors /> {/* Renderizar Toaster con colores ricos */}
       <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
@@ -68,7 +71,6 @@ export default function PropertyForm() {
           <Typography component="h1" variant="h5">
             Crear Propiedad
           </Typography>
-          {error && <Typography color="error">{error}</Typography>}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -79,6 +81,8 @@ export default function PropertyForm() {
                   label="Título de la Propiedad"
                   name="title"
                   autoComplete="property-title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -90,6 +94,8 @@ export default function PropertyForm() {
                   name="description"
                   multiline
                   rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -100,6 +106,8 @@ export default function PropertyForm() {
                   label="Precio"
                   name="price"
                   type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -109,6 +117,8 @@ export default function PropertyForm() {
                   id="location"
                   label="Ubicación"
                   name="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -118,6 +128,8 @@ export default function PropertyForm() {
                   label="URLs de Imágenes (separadas por comas)"
                   name="images"
                   helperText="Ingrese las URLs de las imágenes separadas por comas"
+                  value={images}
+                  onChange={(e) => setImages(e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -129,17 +141,8 @@ export default function PropertyForm() {
             >
               Crear Propiedad
             </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              sx={{ mt: 1, mb: 2 }}
-              onClick={() => navigate('/dashboard')}
-            >
-              Regresar
-            </Button>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 5 }} />
+        </Box>      
       </Container>
     </ThemeProvider>
   );

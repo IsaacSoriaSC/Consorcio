@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import RegisterService from '../services/RegisterService';
 import UserService from '../services/UserService'; // Asumimos que crearás este servicio
+import { Toaster, toast } from 'sonner'; // Importa Toaster y toast
 
 export default function ManageVendors() {
   const [vendors, setVendors] = useState([]);
@@ -43,7 +44,7 @@ export default function ManageVendors() {
   const handleAddVendor = async () => {
     try {
       const vendorData = {
-        username: `${formData.firstName}${formData.lastName}`,
+        username: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password,
         role: 'vendedor'
@@ -51,8 +52,10 @@ export default function ManageVendors() {
       await RegisterService.create(vendorData);
       setOpenAddDialog(false);
       fetchVendors();
+      toast.success('Vendedor añadido exitosamente'); // Mostrar toast de éxito
     } catch (error) {
       console.error('Error adding vendor:', error);
+      toast.error('Error añadiendo vendedor. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
     }
   };
 
@@ -61,8 +64,10 @@ export default function ManageVendors() {
       await UserService.update(selectedVendor._id, formData);
       setOpenEditDialog(false);
       fetchVendors();
+      toast.success('Vendedor editado exitosamente'); // Mostrar toast de éxito
     } catch (error) {
       console.error('Error editing vendor:', error);
+      toast.error('Error editando vendedor. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
     }
   };
 
@@ -70,13 +75,16 @@ export default function ManageVendors() {
     try {
       await UserService.update(id, { active: !currentStatus });
       fetchVendors();
+      toast.success(`Vendedor ${currentStatus ? 'desactivado' : 'activado'} exitosamente`); // Mostrar toast de éxito
     } catch (error) {
       console.error('Error toggling vendor status:', error);
+      toast.error('Error cambiando el estado del vendedor. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
     }
   };
 
   return (
     <Container>
+      <Toaster richColors /> {/* Renderizar Toaster con colores ricos */}
       <Typography variant="h4" gutterBottom>
         Gestionar Vendedores
       </Typography>
