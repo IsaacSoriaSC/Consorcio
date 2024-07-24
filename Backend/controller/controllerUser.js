@@ -44,10 +44,15 @@ router.post('/api/login', async (req, res) => {
   }
 });
 
-// GET /api/users - Obtener todos los usuarios
+// GET /api/users - Obtener todos los usuarios (con opción de filtrar por rol)
 router.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find({});
+    const { role } = req.query;
+    let query = {};
+    if (role) {
+      query.role = role;
+    }
+    const users = await User.find(query);
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -82,7 +87,9 @@ router.post('/api/users', async (req, res) => {
       passwordHash, // Guardar el hash en la base de datos
       role,
       email,
-      createdAt: new Date()
+      createdAt: new Date(),
+      active: true // Establecemos el usuario como activo por defecto
+      // No incluimos lastLogin aquí
     });
 
     // Guardar el usuario en la base de datos

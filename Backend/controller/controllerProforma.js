@@ -1,10 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const Proforma = require('../models/modelProforma');
+const { generateProformaPDF } = require('../services/PDFService');
 
 // GET /api/proformas - Obtener todas las proformas
 router.get('/api/proformas', (req, res) => {
   Proforma.find({})
+    .then(proformas => {
+      res.json(proformas);
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
+});
+
+// GET /api/proformas/:id/pdf - Generar PDF de una proforma
+router.get('/api/proformas/:id/pdf', async (req, res) => {
+  try {
+    const proforma = await Proforma.findById(req.params.id);
+    if (!proforma) {
+      return res.status(404).json({ error: 'Proforma no encontrada' });
+    }
+
+    const pdfBuffer = await generateProformaPDF(proforma);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=proforma_${proforma._id}.pdf`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    res.status(500).json({ error: 'Error generando PDF' });
+  }
+});
+
+// GET /api/proformas/byEmail - Obtener proformas por correo electrónico del cliente
+router.get('/api/proformas/byEmail', (req, res) => {
+  const { clientEmail } = req.query;
+  if (!clientEmail) {
+    return res.status(400).json({ error: 'Se requiere el correo electrónico del cliente' });
+  }
+  
+  // Usamos una expresión regular para hacer la búsqueda insensible a mayúsculas y minúsculas
+  const emailRegex = new RegExp('^' + clientEmail + '$', 'i');
+  
+  Proforma.find({ clientEmail: emailRegex })
     .then(proformas => {
       res.json(proformas);
     })

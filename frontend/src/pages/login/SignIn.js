@@ -33,13 +33,17 @@ function SignIn() {
       const response = await AuthService.login(credentials);
       console.log('Login successful:', response);
       
-      // Verifica el token antes de redirigir
-      const token = localStorage.getItem('token');
+      const { token } = response;
       if (token && token.split('.').length === 3) {
-        navigate('/dashboard');
+        localStorage.setItem('token', token);
+        
+        // Decodificar el token para obtener el rol
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        localStorage.setItem('userRole', decodedToken.role);
+        
+        navigate('/');
       } else {
         console.error('Token inválido recibido');
-        // Maneja el error apropiadamente (por ejemplo, mostrando un mensaje al usuario)
       }
     } catch (error) {
       console.error('Login error:', error);

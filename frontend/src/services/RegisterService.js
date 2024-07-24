@@ -1,6 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from 'axios'
-const baseUrl = 'http://localhost:3003/api/users'
+import API_BASE_URL from './APIConfig';
+
+const baseUrl = `${API_BASE_URL}/users`
 
 const create = async newObject => {
   const response = await axios.post(baseUrl, newObject)

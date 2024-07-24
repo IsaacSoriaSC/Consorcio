@@ -1,7 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from 'axios';
+import API_BASE_URL from './APIConfig';
 
-const baseUrl = 'http://localhost:3003/api/login';
+const baseUrl = `${API_BASE_URL}/login`;
 
 const login = async credentials => {
   try {
