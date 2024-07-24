@@ -3,7 +3,7 @@
 import axios from 'axios';
 import API_BASE_URL from './APIConfig';
 
-const baseUrl = 'http://localhost:3003/api/proformas';
+const baseUrl = `${API_BASE_URL}/proformas`;
 
 const create = async newProforma => {
   try {
