@@ -18,14 +18,14 @@ mongoose.connect(MONGODB_URI)
   console.error('Error connecting to MongoDB:', error.message);
 });
 
-// Middleware para parsear JSON y usar los controladores
+// Middleware para parsear JSON y usar el controlador de usuarios
 app.use(express.json());
-app.use('/api/users', usersRouter);
-app.use('/api/properties', propertiesRouter);
-app.use('/api/quotes', quoteRouter);
-app.use('/api/proformas', proformaRouter);
-app.use('/api/reports', reportRouter);
-app.use('/api/support', supportRouter);
+app.use(usersRouter);
+app.use(propertiesRouter);
+app.use(quoteRouter);
+app.use(proformaRouter);
+app.use(reportRouter);
+app.use(supportRouter);
 
 // Servir archivos estáticos desde la carpeta 'build'
 app.use(express.static(path.join(__dirname, 'build')));
