@@ -30,6 +30,10 @@ app.use('/api/support', supportRouter);
 // Servir archivos estáticos desde la carpeta 'build'
 app.use(express.static(path.join(__dirname, 'build')));
 
+// Manejar cualquier solicitud que no coincida con las rutas definidas anteriormente
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
