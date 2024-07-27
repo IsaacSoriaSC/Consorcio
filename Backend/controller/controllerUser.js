@@ -103,9 +103,9 @@ router.post('/api/users', async (req, res) => {
 // PUT /api/users/:id - Actualizar un usuario por su ID
 router.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { username, email } = req.body;
+  const { username, email, active } = req.body; // Añade active aquí
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { username, email }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, { username, email, active }, { new: true });
     if (!updatedUser) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
@@ -114,6 +114,7 @@ router.put('/api/users/:id', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 // DELETE /api/users/:id - Eliminar un usuario por su ID
 router.delete('/api/users/:id', async (req, res) => {
