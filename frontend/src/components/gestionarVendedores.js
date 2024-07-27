@@ -61,13 +61,17 @@ export default function ManageVendors() {
 
   const handleEditVendor = async () => {
     try {
-      await UserService.update(selectedVendor._id, formData);
+      const updatedVendorData = {
+        username: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email
+      };
+      await UserService.update(selectedVendor._id, updatedVendorData);
       setOpenEditDialog(false);
       fetchVendors();
-      toast.success('Vendedor editado exitosamente'); // Mostrar toast de éxito
+      toast.success('Vendedor editado exitosamente');
     } catch (error) {
       console.error('Error editing vendor:', error);
-      toast.error('Error editando vendedor. Por favor, inténtelo de nuevo.'); // Mostrar toast de error
+      toast.error('Error editando vendedor. Por favor, inténtelo de nuevo.');
     }
   };
 

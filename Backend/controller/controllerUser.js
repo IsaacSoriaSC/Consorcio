@@ -103,8 +103,9 @@ router.post('/api/users', async (req, res) => {
 // PUT /api/users/:id - Actualizar un usuario por su ID
 router.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
+  const { username, email } = req.body;
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, { username, email }, { new: true });
     if (!updatedUser) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
